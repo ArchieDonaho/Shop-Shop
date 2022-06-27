@@ -12,6 +12,8 @@ const StoreProvider = ({ value = [], ...props }) => {
   // dispatch- the method we execute to update our state. It looks for an action object passed as an argument
   const [state, dispatch] = useProductReducer({
     products: [],
+    cart: [],
+    cartOpen: false,
     categories: [],
     currentCategory: '',
   });
