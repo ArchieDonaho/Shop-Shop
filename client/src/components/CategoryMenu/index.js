@@ -6,6 +6,7 @@ import {
   UPDATE_CATEGORIES,
   UPDATE_CURRENT_CATEGORY,
 } from '../../utils/actions';
+import { idbPromise } from '../../utils/helpers';
 
 function CategoryMenu() {
   // retrieve the current state & the update method to update state
@@ -13,7 +14,7 @@ function CategoryMenu() {
   // destructure the categories form state
   const { categories } = state;
   // obtain the category data
-  const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
   // once we get the query data back...
   useEffect(() => {
     // if categoryData exists or ahs changed form the response query, then run dispatch()
@@ -22,6 +23,18 @@ function CategoryMenu() {
       dispatch({
         type: UPDATE_CATEGORIES,
         categories: categoryData.categories,
+      });
+      // save data to idb
+      categoryData.categories.forEach((category) => {
+        idbPromise('categories', 'put', category);
+      });
+    } else if (!loading) {
+      // load the data from the db
+      idbPromise('categories', 'get').then((categories) => {
+        dispatch({
+          type: UPDATE_CATEGORIES,
+          categories: categories,
+        });
       });
     }
   }, [categoryData, dispatch]);
