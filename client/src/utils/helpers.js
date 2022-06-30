@@ -39,7 +39,7 @@ export function idbPromise(storeName, method, object) {
       db.onerror = function (e) {
         console.log('error', e);
       };
-
+      // check the value of the method
       switch (method) {
         case 'put':
           store.put(object);
